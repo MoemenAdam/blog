@@ -8,6 +8,6 @@ const generateMetaPagination = ({ totalDocs, page, limit, data }) => {
     total: totalDocs,
   };
 };
-
+ 
 
 export default generateMetaPagination;
