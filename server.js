@@ -17,9 +17,9 @@ const start = async () => {
     await mongoose.connect(DB);
     console.log('DB connected successfully');
 
-    // server = app.listen(process.env.PORT, () => {
-    //   console.log(`Server started on port ${process.env.PORT}`);
-    // });
+    server = app.listen(process.env.PORT, () => {
+      console.log(`Server started on port ${process.env.PORT}`);
+    });
   } catch (err) {
     console.error('Startup error:', err);
 
@@ -29,14 +29,14 @@ const start = async () => {
 
 start();
 
-// process.on('unhandledRejection', (err) => {
-//   console.error('UNHANDLED REJECTION:', err);
+process.on('unhandledRejection', (err) => {
+  console.error('UNHANDLED REJECTION:', err);
 
-//   if (server) {
-//     server.close(() => {
-//       process.exit(1);
-//     });
-//   } else {
-//     process.exit(1);
-//   }
-// });
+  if (server) {
+    server.close(() => {
+      process.exit(1);
+    });
+  } else {
+    process.exit(1);
+  }
+});
