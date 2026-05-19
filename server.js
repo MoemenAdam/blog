@@ -1,20 +1,39 @@
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
+
 dotenv.config({ path: '.env' });
+
 import app from './app.js';
 
 const DB = process.env.DATABASE.replace('<db_password>', process.env.PASSWORD);
 
-mongoose.connect(DB).then(() => console.log('DB connected successfully'));
+let server;
 
-const server = app.listen(process.env.PORT, () => {
-  console.log('Server start on port', process.env.PORT);
-});
+const start = async () => {
+  try {
+    await mongoose.connect(DB);
+    console.log('DB connected successfully');
+
+    server = app.listen(process.env.PORT, () => {
+      console.log(`Server started on port ${process.env.PORT}`);
+    });
+  } catch (err) {
+    console.error('Startup error:', err);
+
+    process.exit(1);
+  }
+};
+
+start();
 
 process.on('unhandledRejection', (err) => {
-  console.log(err);
+  console.error('UNHANDLED REJECTION:', err);
 
-  server.close(() => {
+  if (server) {
+    server.close(() => {
+      process.exit(1);
+    });
+  } else {
     process.exit(1);
-  });
+  }
 });
