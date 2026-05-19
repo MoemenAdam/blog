@@ -11,11 +11,6 @@ app.use(express.json());
 app.use('/api/v1/posts', PostsRoutes);
 app.use('/api/v1/categories', CategoriesRoutes);
 app.use('/api/v1/tags', TagsRoutes);
-app.use('/', (req, res) => {
-  res.send(
-    '<h1>Hello to my blog project, this project is just learing crud operations there is no Authentication and Authorization</h1>'
-  );
-});
 
 app.use((req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl}`, 404));
