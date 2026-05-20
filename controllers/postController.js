@@ -92,10 +92,10 @@ export const viewPost = async (req, res) => {
 
 export const createPost = async (req, res, next) => {
   const body = {
-    title: req.body?.title,
-    content: req.body?.content,
+    title: req.body?.title?.trim(),
+    content: req.body?.content?.trim(),
     categories: req.body?.categories ?? [],
-    tags: req.body?.tags ?? [],
+    tags: req.body?.tags?.trim() ?? [],
   };
   const post = await PostModel.create(body);
   res.status(200).json({
@@ -107,10 +107,10 @@ export const createPost = async (req, res, next) => {
 export const updatePost = async (req, res) => {
   const id = req.params.id;
   const body = {
-    title: req.body?.title,
-    content: req.body?.content,
+    title: req.body?.title?.trim(),
+    content: req.body?.content?.trim(),
     categories: req.body?.categories ?? [],
-    tags: req.body?.tags ?? [],
+    tags: req.body?.tags?.trim() ?? [],
   };
   const post = await PostModel.findByIdAndUpdate(id, body, {
     new: true,

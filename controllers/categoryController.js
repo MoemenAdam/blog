@@ -58,7 +58,7 @@ export const getCategory = async (req, res) => {
 
 export const createCategory = async (req, res) => {
   const body = {
-    name: req.body?.name,
+    name: req.body?.name?.trim(),
   };
 
   const category = await CategoryModel.create(body);
@@ -73,7 +73,7 @@ export const updateCategory = async (req, res) => {
   const id = req.params.id;
 
   const body = {
-    name: req.body?.name,
+    name: req.body?.name?.trim(),
   };
 
   const category = await CategoryModel.findByIdAndUpdate(id, body, {

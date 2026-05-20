@@ -56,7 +56,7 @@ export const getTag = async (req, res) => {
 
 export const createTag = async (req, res, next) => {
   const body = {
-    name: req.body?.name,
+    name: req.body?.name?.trim(),
   };
   const tag = await TagModel.create(body);
   res.status(200).json({
@@ -68,7 +68,7 @@ export const createTag = async (req, res, next) => {
 export const updateTag = async (req, res) => {
   const id = req.params.id;
   const body = {
-    name: req.body?.name,
+    name: req.body?.name?.trim(),
   };
   const tag = await TagModel.findByIdAndUpdate(id, body, {
     new: true,
