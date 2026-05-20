@@ -43,13 +43,13 @@ const schema = new mongoose.Schema({
 });
 
 schema.pre('save', function () {
-  this.slug = slugify(this.title);
+  this.slug = slugify(this.title, { lower });
 });
 
 schema.pre('findOneAndUpdate', function () {
   const doc = this.getUpdate();
   if (doc.title) {
-    doc.slug = slugify(doc.title);
+    doc.slug = slugify(doc.title, { lower });
   }
   doc.updatedAt = new Date();
 });
