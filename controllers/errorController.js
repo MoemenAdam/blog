@@ -9,14 +9,16 @@ const handleCastError = (err) => {
 
 const handleValidationError = (err) => {
   const errors = {};
-  Object.entries(err.errors).forEach(
-    ([key, value]) =>
-      (errors[key] =
-        value.name === 'CastError'
-          ? `${value.reason.value} is not valid`
-          : value.message)
-  );
-  return new AppError(`Validation error`, 400, errors);
+  let errMessage = 'Validation error';
+  Object.entries(err.errors).forEach(([key, value]) => {
+    const message = (errors[key] =
+      value.name === 'CastError'
+        ? `${value.reason.value} is not valid`
+        : value.message);
+    errMessage = message;
+    return message;
+  });
+  return new AppError(errMessage, 400, errors);
 };
 
 const handleDuplicateError = (err) => {
