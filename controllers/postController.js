@@ -97,7 +97,9 @@ export const createPost = async (req, res, next) => {
     categories: req.body?.categories ?? [],
     tags: req.body?.tags?.trim() ?? [],
   };
-  const post = await PostModel.create(body);
+  const post = (await PostModel.create(body))
+    .populate('tags')
+    .populate('categories');
   res.status(200).json({
     status: 'success',
     data: post,
