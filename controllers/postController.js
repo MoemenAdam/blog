@@ -43,8 +43,7 @@ export const getAllPosts = async (req, res) => {
   const page = Math.max(1, Number(queries.page) || 1);
 
   const posts = await PostModel.find(filter)
-    .populate('tags')
-    .populate('categories')
+    .populate(['tags', 'categories'])
     .skip((page - 1) * limit)
     .limit(limit)
     .sort(sort);
@@ -97,9 +96,8 @@ export const createPost = async (req, res, next) => {
     categories: req.body?.categories ?? [],
     tags: req.body?.tags?.trim() ?? [],
   };
-  const post = (await PostModel.create(body))
-    .populate('tags')
-    .populate('categories');
+  const post = await PostModel.create(body);
+  await post.populate(['tags', 'categories']);
   res.status(200).json({
     status: 'success',
     data: post,
