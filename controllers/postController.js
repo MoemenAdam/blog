@@ -103,8 +103,14 @@ export const createPost = async (req, res, next) => {
   }
   const tags = [];
   const categories = [];
-  new Set(req.body?.tags).forEach((el) => tags.push(el));
-  new Set(req.body?.categories).forEach((el) => tags.push(el));
+  new Set(
+    Array.isArray(req.body?.tags) ? req.body?.tags : [req.body?.tags]
+  ).forEach((el) => tags.push(el));
+  new Set(
+    Array.isArray(req.body?.categories)
+      ? req.body?.categories
+      : [req.body?.categories]
+  ).forEach((el) => tags.push(el));
   const body = {
     title: req.body?.title?.trim(),
     content: req.body?.content?.trim(),
@@ -140,8 +146,14 @@ export const updatePost = async (req, res) => {
   }
   const tags = [];
   const categories = [];
-  new Set(req.body?.tags).forEach((el) => tags.push(el));
-  new Set(req.body?.categories).forEach((el) => tags.push(el));
+  new Set(
+    Array.isArray(req.body?.tags) ? req.body?.tags : [req.body?.tags]
+  ).forEach((el) => tags.push(el));
+  new Set(
+    Array.isArray(req.body?.categories)
+      ? req.body?.categories
+      : [req.body?.categories]
+  ).forEach((el) => tags.push(el));
   const body = {
     title: req.body?.title?.trim(),
     content: req.body?.content?.trim(),
