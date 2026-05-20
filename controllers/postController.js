@@ -1,6 +1,7 @@
 import PostModel from '../models/postModel.js';
 import AppError from '../utils/appError.js';
 import generateMetaPagination from '../utils/metaPagination.js';
+import imagekit from '../imagekit.js';
 
 export const getAllPosts = async (req, res) => {
   const queries = structuredClone(req.query);
@@ -90,11 +91,23 @@ export const viewPost = async (req, res) => {
 };
 
 export const createPost = async (req, res, next) => {
+  let image = {};
+  if (req.file) {
+    const uploadedImage = await imagekit.upload({
+      file: req.file.buffer,
+      fileName: `${Date.now()}-${req.file.originalname}`,
+      folder: '/posts',
+    });
+
+    image = uploadedImage;
+  }
   const body = {
     title: req.body?.title?.trim(),
     content: req.body?.content?.trim(),
     categories: req.body?.categories ?? [],
-    tags: req.body?.tags?.trim() ?? [],
+    tags: req.body?.tags ?? [],
+    image: image.url,
+    imageId: image.fileId,
   };
   const post = await PostModel.create(body);
   await post.populate(['tags', 'categories']);
@@ -106,19 +119,35 @@ export const createPost = async (req, res, next) => {
 
 export const updatePost = async (req, res) => {
   const id = req.params.id;
+  const oldPost = await PostModel.findById(id);
+  if (!oldPost) {
+    throw new AppError('Post not found', 404);
+  }
+
+  let image = {};
+  if (req.file) {
+    const uploadedImage = await imagekit.upload({
+      file: req.file.buffer,
+      fileName: `${Date.now()}-${req.file.originalname}`,
+      folder: '/posts',
+    });
+
+    image = uploadedImage;
+  }
   const body = {
     title: req.body?.title?.trim(),
     content: req.body?.content?.trim(),
     categories: req.body?.categories ?? [],
-    tags: req.body?.tags?.trim() ?? [],
+    tags: req.body?.tags ?? [],
+    image: image.url,
+    imageId: image.fileId,
   };
   const post = await PostModel.findByIdAndUpdate(id, body, {
     new: true,
     runValidators: true,
   });
-  if (!post) {
-    throw new AppError('Post not found', 404);
-  }
+
+  if (oldPost.imageId) await imagekit.deleteFile(oldPost.imageId);
   res.status(200).json({
     status: 'success',
     data: post,

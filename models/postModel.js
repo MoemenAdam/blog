@@ -32,6 +32,11 @@ const schema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  image: String,
+  imageId: {
+    type: String,
+    select: false,
+  },
   createdAt: {
     type: Date,
     default: Date.now,
@@ -52,6 +57,13 @@ schema.pre('findOneAndUpdate', function () {
     doc.slug = slugify(doc.title, { lower: true });
   }
   doc.updatedAt = new Date();
+});
+
+schema.set('toJSON', {
+  transform(doc, ret) {
+    delete ret.imageId;
+    return ret;
+  },
 });
 
 const Model = mongoose.model('Post', schema);
