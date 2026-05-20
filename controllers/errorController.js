@@ -23,10 +23,13 @@ const handleValidationError = (err) => {
 
 const handleDuplicateError = (err) => {
   const errors = {};
-  Object.keys(err.keyPattern).forEach(
-    (key) => (errors[key] = `This ${key} is used before`)
-  );
-  return new AppError(`Duplicate error`, 400, errors);
+  let errMessage = 'Duplicate error';
+  Object.keys(err.keyPattern).forEach((key) => {
+    const message = (errors[key] = `This ${key} is used before`);
+    errMessage = message;
+    return message;
+  });
+  return new AppError(errMessage, 400, errors);
 };
 
 const DevErrors = (err, res) => {
