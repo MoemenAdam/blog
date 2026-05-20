@@ -4,9 +4,11 @@ import CategoriesRoutes from './routes/categoryRoutes.js';
 import TagsRoutes from './routes/tagRoutes.js';
 import globalErrorHandler from './controllers/errorController.js';
 import AppError from './utils/appError.js';
+import cors from 'cors';
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 app.use('/api/v1/posts', PostsRoutes);
 app.use('/api/v1/categories', CategoriesRoutes);
