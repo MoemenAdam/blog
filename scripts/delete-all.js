@@ -10,6 +10,6 @@ mongoose.connect(DB).then(async () => {
   await PostModel.deleteMany();
   await CategoriesModel.deleteMany();
   await TagsModel.deleteMany();
-  console.log('Db cleared');
+  console.log('DB cleared');
   process.exit();
 });
