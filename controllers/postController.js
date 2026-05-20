@@ -101,11 +101,15 @@ export const createPost = async (req, res, next) => {
 
     image = uploadedImage;
   }
+  const tags = [];
+  const categories = [];
+  new Set(req.body?.tags).forEach((el) => tags.push(el));
+  new Set(req.body?.categories).forEach((el) => tags.push(el));
   const body = {
     title: req.body?.title?.trim(),
     content: req.body?.content?.trim(),
-    categories: req.body?.categories ?? [],
-    tags: req.body?.tags ?? [],
+    categories: categories ?? [],
+    tags: tags ?? [],
     image: image.url,
     imageId: image.fileId,
   };
@@ -134,11 +138,15 @@ export const updatePost = async (req, res) => {
 
     image = uploadedImage;
   }
+  const tags = [];
+  const categories = [];
+  new Set(req.body?.tags).forEach((el) => tags.push(el));
+  new Set(req.body?.categories).forEach((el) => tags.push(el));
   const body = {
     title: req.body?.title?.trim(),
     content: req.body?.content?.trim(),
-    categories: req.body?.categories ?? [],
-    tags: req.body?.tags ?? [],
+    categories: categories ?? [],
+    tags: tags ?? [],
     image: image.url,
     imageId: image.fileId,
   };
