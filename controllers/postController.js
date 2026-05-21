@@ -119,12 +119,17 @@ export const createPost = async (req, res, next) => {
     image: image.url,
     imageId: image.fileId,
   };
-  const post = await PostModel.create(body);
-  await post.populate(['tags', 'categories']);
-  res.status(200).json({
-    status: 'success',
-    data: post,
-  });
+  try {
+    const post = await PostModel.create(body);
+    await post.populate(['tags', 'categories']);
+    res.status(200).json({
+      status: 'success',
+      data: post,
+    });
+  } catch (err) {
+    await imagekit.deleteFile(image.fileId);
+    next(err);
+  }
 };
 
 export const updatePost = async (req, res) => {
@@ -180,6 +185,7 @@ export const deletePost = async (req, res) => {
   if (!post) {
     throw new AppError('Post not found', 404);
   }
+  if (post.imageId) await imagekit.deleteFile(post.imageId);
   res.status(204).json({
     status: 'success',
     data: req.body,
