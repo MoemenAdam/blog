@@ -35,7 +35,6 @@ const schema = new mongoose.Schema({
   image: String,
   imageId: {
     type: String,
-    select: false,
   },
   createdAt: {
     type: Date,

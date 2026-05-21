@@ -167,16 +167,23 @@ export const updatePost = async (req, res) => {
     image: image.url,
     imageId: image.fileId,
   };
-  const post = await PostModel.findByIdAndUpdate(id, body, {
-    new: true,
-    runValidators: true,
-  });
 
-  if (oldPost.imageId) await imagekit.deleteFile(oldPost.imageId);
-  res.status(200).json({
-    status: 'success',
-    data: post,
-  });
+  try {
+    const post = await PostModel.findByIdAndUpdate(id, body, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (oldPost.imageId) await imagekit.deleteFile(oldPost.imageId);
+    res.status(200).json({
+      status: 'success',
+      data: post,
+    });
+  } catch (err) {
+    if (image.fileId) await imagekit.deleteFile(image.fileId);
+    if (oldPost.imageId) await imagekit.deleteFile(oldPost.imageId);
+    next(err);
+  }
 };
 
 export const deletePost = async (req, res) => {
