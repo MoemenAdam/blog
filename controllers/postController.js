@@ -61,7 +61,7 @@ export const getAllPosts = async (req, res) => {
 
 export const getPost = async (req, res) => {
   const id = req.params.id;
-  const post = await PostModel.findById(id);
+  const post = await PostModel.findById(id).populate(['tags', 'categories']);
 
   if (!post) {
     throw new AppError('Post not found', 404);

@@ -9,7 +9,7 @@ export const getAllTags = async (req, res) => {
 
   if (queries.search) {
     const value = queries.search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    filter.title = {
+    filter.name = {
       $regex: value,
       $options: 'i',
     };
