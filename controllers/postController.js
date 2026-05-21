@@ -192,7 +192,7 @@ export const updatePost = async (req, res) => {
   const post = await PostModel.findByIdAndUpdate(id, body, {
     new: true,
     runValidators: true,
-  });
+  }).populate(['tags', 'categories']);
 
   if (image.fileId && oldPost.imageId)
     await imagekit.deleteFile(oldPost.imageId);
