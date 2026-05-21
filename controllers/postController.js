@@ -149,41 +149,57 @@ export const updatePost = async (req, res) => {
 
     image = uploadedImage;
   }
-  const tags = [];
-  const categories = [];
-  new Set(
-    Array.isArray(req.body?.tags) ? req.body?.tags : [req.body?.tags]
-  ).forEach((el) => tags.push(el));
-  new Set(
-    Array.isArray(req.body?.categories)
-      ? req.body?.categories
-      : [req.body?.categories]
-  ).forEach((el) => tags.push(el));
-  const body = {
-    title: req.body?.title?.trim(),
-    content: req.body?.content?.trim(),
-    categories: categories ?? [],
-    tags: tags ?? [],
-    image: image.url,
-    imageId: image.fileId,
-  };
+  const tags = [
+    ...new Set(
+      Array.isArray(req.body.tags)
+        ? req.body.tags
+        : req.body.tags
+        ? [req.body.tags]
+        : []
+    ),
+  ];
+  const categories = [
+    ...new Set(
+      Array.isArray(req.body.categories)
+        ? req.body.categories
+        : req.body.categories
+        ? [req.body.categories]
+        : []
+    ),
+  ];
+  const body = {};
 
-  try {
-    const post = await PostModel.findByIdAndUpdate(id, body, {
-      new: true,
-      runValidators: true,
-    });
-
-    if (oldPost.imageId) await imagekit.deleteFile(oldPost.imageId);
-    res.status(200).json({
-      status: 'success',
-      data: post,
-    });
-  } catch (err) {
-    if (image.fileId) await imagekit.deleteFile(image.fileId);
-    if (oldPost.imageId) await imagekit.deleteFile(oldPost.imageId);
-    next(err);
+  if (req.body?.title?.trim()) {
+    body.title = req.body.title.trim();
   }
+
+  if (req.body?.content?.trim()) {
+    body.content = req.body.content.trim();
+  }
+
+  if (categories.length) {
+    body.categories = categories;
+  }
+
+  if (tags.length) {
+    body.tags = tags;
+  }
+
+  if (image.url) {
+    body.image = image.url;
+    body.imageId = image.fileId;
+  }
+  const post = await PostModel.findByIdAndUpdate(id, body, {
+    new: true,
+    runValidators: true,
+  });
+
+  if (image.fileId && oldPost.imageId)
+    await imagekit.deleteFile(oldPost.imageId);
+  res.status(200).json({
+    status: 'success',
+    data: post,
+  });
 };
 
 export const deletePost = async (req, res) => {
