@@ -110,7 +110,7 @@ export const createPost = async (req, res, next) => {
     Array.isArray(req.body?.categories)
       ? req.body?.categories
       : [req.body?.categories]
-  ).forEach((el) => tags.push(el));
+  ).forEach((el) => categories.push(el));
   const body = {
     title: req.body?.title?.trim(),
     content: req.body?.content?.trim(),
