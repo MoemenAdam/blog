@@ -80,7 +80,7 @@ export const viewPost = async (req, res) => {
       $inc: { views: 1 },
     },
     { new: 1 }
-  );
+  ).populate(['tags', 'categories']);
   if (!post) {
     throw new AppError('Post not found', 404);
   }
